@@ -157,7 +157,7 @@ Tradicionalmente, el análisis del equilibrio autonómico se realiza mediante el
 
 Los métodos no lineales, incluido el Diagrama de Poincaré, complementan el análisis de dominio temporal y frecuencial, reconociendo la complejidad de los sistemas de control del corazón.
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Luego de la investigación se realizo la captura de la señal con ayuda del módulo AD8232, en donde se registró durante 4 minutos. En los dos primeros minutos, la persona permaneció quieta, sin ningún movimiento, y en los dos minutos restantes leyó un texto.
 La captura se realizó con el siguiente codigo:
 
@@ -198,10 +198,243 @@ plt.show()
 #%%
 np.savetxt(f"labo fs{fs}.txt", [t,senal])
 ```
+Para así guardar los datos en un archivo TXT y luego graficar los datos con el siguiente codigo:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# === CONFIGURACIÓN ===
+ruta = "/content/senal_ECG_20251112_150635.txt"     # <-- cambia esta ruta
+duracion_total = 240   # segundos (2 minutos)
+segmento = 240          # duración de cada gráfica en segundos
+
+# === CARGAR DATOS ===
+data = np.loadtxt(ruta)
+t = data[:, 0]
+x = data[:, 1]
+
+# === CORTAR A LOS PRIMEROS 2 MINUTOS ===
+mask_total = t <= duracion_total
+t = t[mask_total]
+x = x[mask_total]
+
+# === DIVIDIR EN SEGMENTOS DE 60 s ===
+num_segmentos = int(np.ceil(duracion_total / segmento))
+
+plt.figure(figsize=(10, 4))
+for i in range(num_segmentos):
+    inicio = i * segmento
+    fin = (i + 1) * segmento
+    mask = (t >= inicio) & (t < fin)
+
+    plt.subplot(num_segmentos, 1, i + 1)
+    plt.plot(t[mask], x[mask])
+    plt.title(f"Segmento {i+1}: {inicio:.0f}s a {fin:.0f}s")
+    plt.xlabel("Tiempo [s]")
+    plt.ylabel("Amplitud [V]")
+    plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+```
+Obteniendo la siguiente grafica:
+
+<img width="988" height="390" alt="image" src="https://github.com/user-attachments/assets/c5456831-57ce-47e6-a030-3435c73e3de4" />
 
 ## PARTE B 
 
+En esta segunda parte se aplica un pre-procesaiento de esta señal, diseñando un filtro IIR de acuerdo con los parametros dde la señal, para luego obtener la ecuación teniendo en cuenta que la señal se divide en dos segamentos y por ultimo asumiendo parámetros inciales en 0,  estos calculos se evidencian en la siguiente imagen:
 
+<img width="899" height="1028" alt="image" src="https://github.com/user-attachments/assets/22c4adf8-7377-4ecb-8ad6-4a3ef281edb4" />
+
+![WhatsApp Image 2025-11-15 at 10 12 35 PM](https://github.com/user-attachments/assets/feb36187-00bb-4d74-9550-5326b2daf408)
+
+![WhatsApp Image 2025-11-15 at 10 12 57 PM](https://github.com/user-attachments/assets/97a558bb-c3bf-4029-aa04-9f8cbe6b92ba)
+
+
+Obteniendo el siguiente codigo para aplicar el filtro pasa banda.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import butter, filtfilt
+
+# === CONFIGURACIÓN ===
+ruta = "/content/senal_ECG_20251112_150635.txt"     # <-- cambia esta ruta
+duracion_total = 240      # segundos grabados (ejemplo)
+segmento = 240            # duración de cada gráfico en segundos
+fs = 2000                 # frecuencia de muestreo real
+
+# === CARGAR DATOS (2 columnas: tiempo y señal) ===
+data = np.loadtxt(ruta)
+t = data[:, 0]
+x = data[:, 1]
+
+# === DISEÑO DEL FILTRO PASA BANDA ===
+f_p1 = 0.5     # Hz  (borde inferior de pasabanda)
+f_p2 = 40.0    # Hz  (borde superior de pasabanda)
+orden = 3      # porque el prototipo fue N=3 y el BP → 2N
+
+Wn = [f_p1 / (fs/2), f_p2 / (fs/2)]
+b, a = butter(orden, Wn, btype='bandpass')
+
+# === APLICAR FILTRO ===
+x_f = filtfilt(b, a, x)
+
+# === GRAFICAR POR SEGMENTOS ===
+muestras_segmento = int(segmento * fs)
+
+plt.figure(figsize=(14,6))
+
+plt.subplot(2,1,1)
+plt.plot(t, x, color='gray')
+plt.title("Señal ECG original")
+plt.xlabel("Tiempo [s]")
+plt.ylabel("Amplitud")
+
+plt.subplot(2,1,2)
+plt.plot(t, x_f, color='blue')
+plt.title("ECG filtrado 0.5–40 Hz (Butterworth orden 3)")
+plt.xlabel("Tiempo [s]")
+plt.ylabel("Amplitud")
+
+plt.tight_layout()
+plt.show()
+
+# === GUARDAR SEÑAL FILTRADA ===
+np.savetxt("/content/senal_filtrada.txt",
+           np.column_stack((t, x_f)),
+           fmt="%.8f")
+
+print("Listo: señal filtrada guardada como 'senal_filtrada.txt'")
+```
+Teniendo así la siguiente grafica:
+
+<img width="1389" height="590" alt="image" src="https://github.com/user-attachments/assets/de24db21-9453-4baf-88cd-e79ba89d7f28" />
+
+luego se identifican los picos R en los dos segmentos, calculando los  intervalos e los segmentos R-R y obteniendo una nueva señal, esto se evidencia con el siguiente codigo:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+
+
+ruta = "/content/senal_filtrada.txt"
+
+data = np.loadtxt(ruta)
+t = data[:, 0]
+x_f = data[:, 1]
+
+fs = 2000
+duracion_segmento = 120
+N_segmento = int(duracion_segmento * fs)
+
+
+seg1 = x_f[0:N_segmento]
+t1 = t[0:N_segmento]
+
+seg2 = x_f[N_segmento:2*N_segmento]
+t2 = t[N_segmento:2*N_segmento]
+
+
+dist_min = int(0.25 * fs)
+umbral1 = 0.3 * np.max(seg1)
+umbral2 = 0.3 * np.max(seg2)
+
+
+picos1, _ = find_peaks(seg1, distance=dist_min, height=umbral1)
+picos2, _ = find_peaks(seg2, distance=dist_min, height=umbral2)
+
+
+tR1 = t1[picos1]
+tR2 = t2[picos2]
+
+RR1 = np.diff(tR1)
+RR2 = np.diff(tR2)
+
+
+np.savetxt("/content/RR_segmento1.txt", RR1, fmt="%.6f")
+np.savetxt("/content/RR_segmento2.txt", RR2, fmt="%.6f")
+
+print("RR_segmento1.txt y RR_segmento2.txt generados correctamente.")
+
+
+plt.figure(figsize=(16,8))
+
+# Segmento 1 con R detectados
+plt.subplot(3,1,2)
+plt.plot(t1, seg1)
+plt.plot(tR1, seg1[picos1], "ro")
+plt.title("Segmento 1 (0–120 s) con picos R")
+plt.xlabel("Tiempo [s]")
+
+# Segmento 2 con R detectados
+plt.subplot(3,1,3)
+plt.plot(t2, seg2)
+plt.plot(tR2, seg2[picos2], "ro")
+plt.title("Segmento 2 (120–240 s) con picos R")
+plt.xlabel("Tiempo [s]")
+
+plt.tight_layout()
+plt.show()
+```
+
+Obteniendo las siguientes señales:
+
+<img width="1590" height="543" alt="image" src="https://github.com/user-attachments/assets/436553d5-b713-4d84-bcfc-9f3acb333d11" />
+
+Para fianlizar esta parte se realizo una comparacion de los parámetros básicos de la HRV en el dominio del tiempo , con la medida de los intervalos R-R y su desviación estandar entre ambos segmentos, esto se realizo con el siguiente codigo:
+
+```python
+import numpy as np
+
+mean_RR1 = np.mean(RR1)
+sdnn1 = np.std(RR1, ddof=1)
+mean_RR2 = np.mean(RR2)
+sdnn2 = np.std(RR2, ddof=1)
+
+print("==========================================")
+print("   PARÁMETROS HRV — DOMINIO DEL TIEMPO")
+print("==========================================")
+
+print("\n► Segmento 1 (0–120 s):")
+print(f" Media RR   : {mean_RR1:.4f} s")
+print(f" SDNN       : {sdnn1:.4f} s")
+
+print("\n► Segmento 2 (120–240 s):")
+print(f" Media RR   : {mean_RR2:.4f} s")
+print(f" SDNN       : {sdnn2:.4f} s")
+
+if mean_RR2 < mean_RR1:
+    print("\n↓ La media RR es menor en el segmento 2 → mayor frecuencia cardíaca")
+else:
+    print("\n↑ La media RR es mayor en el segmento 2 → menor frecuencia cardíaca")
+
+if sdnn2 < sdnn1:
+    print("↓ La variabilidad (SDNN) es menor en el segmento 2 (menos variación).")
+else:
+    print("↑ La variabilidad (SDNN) es mayor en el segmento 2 (más variación).")
+```
+
+Teniendo como resultado los siguientes datos:
+==========================================
+
+   PARÁMETROS HRV — DOMINIO DEL TIEMPO
+
+
+► Segmento 1 (0–120 s):
+ Media RR   : 0.6541 s
+ SDNN       : 0.0537 s
+
+► Segmento 2 (120–240 s):
+ Media RR   : 0.6235 s
+ SDNN       : 0.1446 s
+
+↓ La media RR es menor en el segmento 2 → mayor frecuencia cardíaca
+
+↑ La variabilidad (SDNN) es mayor en el segmento 2 (más variación).
 
 ## PARTE C 
 
