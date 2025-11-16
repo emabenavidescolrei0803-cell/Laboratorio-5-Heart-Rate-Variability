@@ -60,10 +60,105 @@ La actividad parasimpática (SP), a través del nervio vago, se relaciona con la
 - Marcador en HRV: El Componente de Alta Frecuencia (HF) (0.15–0.4 Hz) se relaciona con la arritmia sinusal respiratoria y es considerado un marcador de la actividad de la rama parasimpática (tono vagal).
 
 ### Variabilidad de la frecuencia cardíaca (HRV) obtenida a partir de la señal electrocardiográfica (ECG)
+
+La Variabilidad de la Frecuencia Cardíaca (VFC), o HRV por sus siglas en inglés (Heart Rate Variability), es uno de los indicadores principales del funcionamiento del Sistema Nervioso Autónomo (SNA). Su medición tradicional se realiza a partir de la señal electrocardiográfica (ECG).
+La VFC es el fenómeno fisiológico de la variación que existe latido a latido en el tiempo, específicamente en la duración de los intervalos entre latidos. Este cambio constante en el intervalo latido a latido se debe a la interacción entre el sistema nervioso parasimpático (SP) y el simpático (SS), modulados por múltiples factores como centros corticales y subcorticales, así como baro y quimiorreceptores periféricos.
+A continuación, se detalla cómo se obtiene y se analiza la HRV a partir de la señal ECG según las fuentes:
+
+#### 1. Obtención de la señal ECG y la secuencia RR
+La señal ECG es un registro gráfico de la actividad eléctrica generada por el miocardio durante el ciclo cardíaco.
+#### Detección y Medición
+La medición de la VFC se basa en el electrocardiograma (ECG), donde se detecta cada una de las ondas R y se calcula el tiempo entre las diferentes ondas R consecutivas, conocido como el intervalo RR ($RR_i$). La serie de intervalos RR es lo que constituye la HRV
+
+- Frecuencia de Muestreo y Precisión: Para una estimación precisa del tiempo de ocurrencia de la onda R (con una precisión requerida de 1 a 2 ms), la frecuencia de muestreo del ECG debe ser de al menos 500 a 1000 Hz. Una frecuencia inferior a 500 Hz puede causar una distorsión crítica en los resultados del análisis de HRV, particularmente en la estimación del espectro.
+- Detección QRS: La detección de los complejos QRS (picos R) es esencial para medir la HRV. El método Pan-Tompkins es uno de los algoritmos utilizados, caracterizado por su velocidad de cálculo y robustez, que implica un preprocesamiento (filtrado, derivación, cuadratura), integración y reglas de decisión con umbrales adaptativos para diferenciar los picos R de posibles ondas T pronunciadas o ruido.
+- Re-muestreo y Artefactos: La secuencia RR obtenida no está muestreada uniformemente, por lo que es necesario re-muestrearla a una frecuencia constante (por ejemplo, 2 Hz o 4 Hz) e interpolarla (a menudo con interpolación polinómica de orden 3 o cúbica) para obtener una serie temporal uniforme adecuada para el análisis espectral.
+- Eliminación de Artefactos: El preprocesamiento cuidadoso de los datos RR es crucial, ya que artefactos técnicos (detecciones erróneas) o fisiológicos (latidos ectópicos) pueden interferir. El método de Kaplan utiliza un modelo autorregresivo para identificar y corregir artefactos (impulsos o no linealidades) en la secuencia RR, efectuando la corrección mediante interpolación y conservando el número original de muestras.
+
+#### 2. Métodos de Análisis de HRV
+Una vez procesada la secuencia RR, los parámetros estadísticos para la caracterización de la VFC se valoran en dominios específicos:
+#### A. Dominio Temporal
+Es la descripción más básica de la variabilidad. Los parámetros se expresan en unidades de tiempo (ms) y analizan los lapsos entre complejos QRS:
+- SDNN (Desviación estándar de todos los RRi normales): Refleja la variación general (tanto a corto como a largo plazo) dentro de la serie RR.
+- rMSSD (Raíz cuadrada de la diferencia entre RRi normales adyacentes): Mide la variabilidad a corto plazo, latido a latido. Es igual a la desviación estándar de las sucesivas diferencias de intervalo RR (SDSD) para series estacionarias.
+- pNN50 (Porcentaje de RRi adyacentes con una diferencia de duración mayor a 50 ms): Otra medida de la variabilidad a corto plazo.
+- Otros parámetros: Promedio del intervalo RR ($RR_i$), desviación estándar de los promedios de los $RR_i$ (SDANN), y frecuencia cardíaca promedio (HR prom).
+
+#### B.  Dominio Frecuencial
+Estos parámetros cuantifican las fluctuaciones cíclicas del $RR_i$ mediante un análisis de la densidad espectral de potencia (PSD), descomponiendo la VFC en componentes oscilatorios.
+Las bandas de frecuencia utilizadas para registros de corta duración (5 minutos) son:
+##### 1. Componente de Alta Frecuencia (HF):
+ - Rango de 0.15 a 0.4 Hz.
+ - Mide la VFC debida a la arritmia sinusal respiratoria.
+ - Su principal regulador es el sistema nervioso parasimpático (SP), por lo que se utiliza como marcador de la actividad del SP.
+##### 2. Componente de Baja Frecuencia (LF): 
+- Rango de 0.04 a 0.15 Hz.
+- Su interpretación ha sido controversial.
+- Representa un efecto combinado entre las ramas simpática y parasimpática.
+- Ocurre en sincronización con las fluctuaciones fisiológicas de la presión arterial y se correlaciona directamente con el barorreflejo.
+##### 3. Componente de Muy Baja Frecuencia (VLF):
+- Rango de 0.003 a 0.04 Hz.
+- Es un indicador de la termorregulación y la descarga simpática.
+##### 4. Razón LF/HF:
+Se ha utilizado para establecer el balance entre el SP y el SS. Sin embargo, su utilidad es debatida, ya que el SS y el SP no siempre actúan de manera recíproca.
+
+#### C. Métodos Geométricos y No Lineales
+Existen otros métodos utilizados para el análisis de la VFC:
+- Métodos Geométricos: Se calculan a partir del histograma del intervalo RR. Incluyen el Índice Triangular HRV (HRVi), el TINN (ancho de la línea base del histograma RR), y el Índice de Estrés de Baevsky (SI).
+- Métodos No Lineales: Teniendo en cuenta la complejidad de los sistemas de control, se utilizan para analizar las propiedades no lineales de la HRV. Incluyen el Gráfico de Poincaré (o plot de Lorenz), la entropía aproximada (ApEm), la entropía muestral (SapEm), y el análisis de fluctuación de tendencia (FDA). El gráfico de Poincaré transforma la fluctuación RR en puntos distribuidos en un plano bidimensional, que generalmente forman una configuración elipsoidal.
+
+#### 3. Implicaciones y Utilidad
+El análisis de la HRV se ha utilizado ampliamente en la investigación y en la clínica como un método no invasivo para determinar la actividad del SNA.
+- Pronóstico y Riesgo: La disminución de la VFC se asocia con una menor adaptabilidad de la regulación cardiovascular y se relaciona con una mayor morbimortalidad. Se ha relacionado con un aumento en la mortalidad posterior a un infarto del miocardio, y con un riesgo aumentado de muerte súbita y taquiarritmias ventriculares fatales.
+- Patologías: Las aplicaciones involucran una gran variedad de campos, incluyendo enfermedades cardiovasculares y sus factores de riesgo (como hipertensión, insuficiencia cardíaca), así como psicopatologías (depresión, ansiedad, estrés).
+- Control del Ejercicio: La VFC es útil para monitorear el efecto del entrenamiento, la capacidad de trabajo y el rendimiento físico en atletas. A corto plazo, el ejercicio produce una disminución rápida de la VFC, relacionada con la inhibición del SP. A largo plazo, el entrenamiento físico produce un aumento de la VFC.
+
 ### Diagrama de Poincaré como herramienta de análisis de la serie R-R
 
+El Diagrama de Poincaré (también conocido como plot de Lorenz o gráfico de recurrencia) es una herramienta de análisis no lineal que se utiliza para evaluar la Variabilidad de la Frecuencia Cardíaca (VFC) a partir de la serie de intervalos R-R (Intervalos entre complejos QRS consecutivos) obtenidos de la señal electrocardiográfica (ECG).
+El análisis de la VFC, en general, se considera uno de los principales indicadores del funcionamiento del Sistema Nervioso Autónomo (SNA). 
+A continuación, se detalla el uso del Diagrama de Poincaré y su relación con la VFC y el Balance Autonómico, según la información disponible:
 
-Luego dee la investigación se realizo la captura de la señal con ayuda del módulo AD8232, en donde se registró durante 4 minutos. En los dos primeros minutos, la persona permaneció quieta, sin ningún movimiento, y en los dos minutos restantes leyó un texto.
+#### 1. Construcción y Componentes del Diagrama de Poincaré
+El Diagrama de Poincaré es un gráfico bidimensional que transforma la fluctuación R-R en puntos distribuidos en un plano.
+- Construcción: Se crea trazando el intervalo R-R actual ($I_k$) contra el intervalo R-R inmediatamente siguiente ($I_{k+1}$).
+- Configuración Visual: En sujetos sanos, la distribución de estos puntos generalmente adopta una configuración elipsoidal en el plano,. Esta configuración puede cambiar visualmente con la alteración autonómica,.
+- Datos Requeridos: Para realizar esta evaluación, se ha sugerido que tan solo 100 intervalos R-R (que en la mayoría de los casos son menos de 2 minutos) son suficientes para la evaluación de la función autonómica cardíaca (FAC) a corto plazo.
+
+##### Ejes y Significado Fisiológico
+El análisis de la configuración elipsoidal permite calcular dos componentes principales que reflejan distintos aspectos de la fluctuación R-R,:
+A.  Eje Transversal ($T$ o SD1): Este eje es perpendicular (vertical) a la línea de identidad ($I_k = I_{k+1}$).
+- Refleja la variación latido a latido (beat-to-beat variation) en el tacograma (la serie temporal de intervalos R-R),.
+- Una gran diferencia entre dos intervalos adyacentes resulta en un punto trazado lejos de la línea de identidad y un valor grande para $T$.
+B. Eje Longitudinal ($L$ o SD2): Este eje es paralelo a la línea de identidad ($I_k = I_{k+1}$).
+- Refleja la amplitud general de la fluctuación (overall amplitude),.
+- Si la fluctuación es grande pero continua (gran amplitud, pero pequeña variación latido a latido), los puntos se distribuyen ampliamente a lo largo de la línea de identidad, resultando en un $L$ grande y un $T$ pequeño.
+
+Ambos componentes ($T$ y $L$) se calculan generalmente como cuatro veces las desviaciones estándar de los puntos trazados a lo largo de sus respectivos ejes, lo cual ayuda a aproximar la imagen visual del plot.
+
+#### 2. Diagrama de Poincaré y Balance Autonómico
+El Diagrama de Poincaré es un método que ha demostrado ser útil para cuantificar la función autonómica. Se ha utilizado para derivar índices sensibles a la función de las ramas simpática y parasimpática del SNA:
+- Índice Vagal Cardíaco (CVI): Este índice, derivado del Diagrama de Poincaré (específicamente la medida $\log_{10}(L/T)$), ha demostrado ser un índice sensible a la función vagal cardíaca (parasimpática) que no es afectado por la actividad simpática.
+- Índice Simpático Cardíaco (CSI): La razón $L/T$ (LrT ratio o $SD2/SD1$) es un índice de la función simpática cardíaca que no se ve afectado por la actividad vagal (excepto en condición de reposo supino).
+
+##### A. Interpretación Visual y Autonómica:
+La forma del diagrama se relaciona directamente con la modulación autonómica:
+- El área de la elipse se vuelve más grande a medida que la actividad vagal (parasimpática) se eleva.
+- La configuración se vuelve más larga y estrecha a medida que la actividad simpática se eleva.
+
+Los índices derivados del Diagrama de Poincaré (S1, S2 y S2/S1) han sido utilizados en estudios que comparan la VFC (obtenida por ECG) con la Variabilidad de la Frecuencia de Pulso (PRV, obtenida por fotopletismografía, PPG). Dicha comparación reveló que la diferencia entre estas dos medidas, aunque pequeña, produce una discrepancia significativa en los índices de Poincaré.
+
+#### 3.  Contexto de la VFC y el Balance Autonómico
+La Variabilidad de la Frecuencia Cardíaca (VFC) es el fenómeno de la variación de la duración de los intervalos entre latidos. Su existencia se debe a la interacción constante entre el Sistema Nervioso Parasimpático (SP) y el Sistema Nervioso Simpático (SS), que son los componentes eferentes del SNA.
+Tradicionalmente, el análisis del equilibrio autonómico se realiza mediante el dominio frecuencial.
+- Componente de Alta Frecuencia (HF): Se relaciona con la arritmia sinusal respiratoria y el comportamiento de la rama parasimpática,, y se utiliza como marcador de su actividad.
+- Componente de Baja Frecuencia (LF): Representa el efecto combinado entre las ramas simpática y parasimpática, y está modulado por el barorreflejo,,.
+- Razón LF/HF: Esta razón se ha utilizado para establecer el balance entre el SP y el SS, aunque su interpretación es controversial, ya que el SP y el SS no siempre actúan de manera recíproca. En contraste, el Diagrama de Poincaré ofrece una forma de medir la influencia de cada rama de forma separada a través de sus índices $T$ y $L$,.
+
+Los métodos no lineales, incluido el Diagrama de Poincaré, complementan el análisis de dominio temporal y frecuencial, reconociendo la complejidad de los sistemas de control del corazón.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+Luego de la investigación se realizo la captura de la señal con ayuda del módulo AD8232, en donde se registró durante 4 minutos. En los dos primeros minutos, la persona permaneció quieta, sin ningún movimiento, y en los dos minutos restantes leyó un texto.
 La captura se realizó con el siguiente codigo:
 
 ```python
