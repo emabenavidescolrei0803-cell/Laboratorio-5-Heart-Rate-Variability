@@ -481,7 +481,7 @@ Teniendo como resultado los siguientes diagramas:
 
 <img width="1403" height="590" alt="image" src="https://github.com/user-attachments/assets/225ee334-e71e-4b03-99e4-9822a4b7890b" />
 
-En estos diagramas observamos que en el segmento 1 (Azul) no hay mucha dispersion de los puntos, estos se acumulan principalmente entre 0,55 y 0,8 formando una elipse, lo que indica 
+En estos diagramas observamos que en el segmento 1 (Azul) en el cual la persona se encontraba en reposo no hay mucha dispersion de los puntos, estos se acumulan principalmente entre 0,55 y 0,8 formando una elipse, lo que indica que hay mayor actividad del sistema parasimpático, indicando una distribucion normal de un paciente sano. Por otro lado el segmento 2 (Rojo) tomado mientras la persona leía se evidencia mayor dispersion indicando mayor actividad simpatica.
 
 
 ## BIBLIOGRAFIA 
