@@ -438,6 +438,50 @@ Teniendo como resultado los siguientes datos:
 
 ## PARTE C 
 
+Para esta ultima parte se obtiene el diagrama de Poincare para cada segmento de la señal ECG. Este diagrama se obtiene implementando el siguiente código:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Segmento 1
+x1 = RR1[:-1]
+y1 = RR1[1:]
+
+# Segmento 2
+x2 = RR2[:-1]
+y2 = RR2[1:]
+
+plt.figure(figsize=(14,6))
+
+# --- Segmento 1 ---
+plt.subplot(1,2,1)
+plt.scatter(x1, y1, color='blue', alpha=0.6)
+plt.title("Poincaré – Segmento 1 (0–120 s)")
+plt.xlabel("RR(n) [s]")
+plt.ylabel("RR(n+1) [s]")
+plt.grid(True)
+plt.axis('equal')
+
+# --- Segmento 2 ---
+plt.subplot(1,2,2)
+plt.scatter(x2, y2, color='red', alpha=0.6)
+plt.title("Poincaré – Segmento 2 (120–240 s)")
+plt.xlabel("RR(n) [s]")
+plt.ylabel("RR(n+1) [s]")
+plt.grid(True)
+plt.axis('equal')
+
+plt.tight_layout()
+plt.show()
+
+```
+Teniendo como resultado los siguientes diagramas:
+
+<img width="1403" height="590" alt="image" src="https://github.com/user-attachments/assets/225ee334-e71e-4b03-99e4-9822a4b7890b" />
+
+En estos diagramas observamos que en el segmento 1 (Azul) no hay mucha dispersion de los puntos, estos se acumulan principalmente entre 0,55 y 0,8 formando una elipse, lo que indica 
 
 
 ## BIBLIOGRAFIA 
