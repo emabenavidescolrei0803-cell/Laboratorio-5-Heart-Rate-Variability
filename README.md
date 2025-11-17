@@ -419,8 +419,9 @@ else:
 ```
 
 Teniendo como resultado los siguientes datos:
-==========================================
 
+==========================================
+  
    PARÁMETROS HRV — DOMINIO DEL TIEMPO
 
 
