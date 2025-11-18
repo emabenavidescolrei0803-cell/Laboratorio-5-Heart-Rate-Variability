@@ -548,6 +548,7 @@ Obteniendo los siguientes resultados:
 Segmento 1:
 CSI = 2.712055651027267
 CVI = 3.272602454895964
+
 Segmento 2:
 CSI = 1.2857945457318
 CVI = 4.307038704112275
