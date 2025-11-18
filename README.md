@@ -2,7 +2,17 @@
 
 En este laboratorio se empleó el módulo de electrocardiografía AD8232. Antes de realizar la captura de la señal, se llevó a cabo una investigación preliminar sobre el funcionamiento del dispositivo y los principios de adquisición de señales ECG. Posteriormente, se registró la actividad eléctrica cardíaca de un sujeto durante un periodo de 4 minutos. La señal obtenida fue procesada mediante un filtro IIR, con el objetivo de mejorar su calidad y eliminar el ruido. Finalmente, se construyó un diagrama de Poincaré para analizar la variabilidad de la frecuencia cardíaca.
 
+Para el desarrollo de este se realizó el siguiente diagrama de planeación:
+
+![Diagrama de planeación_page-0001](https://github.com/user-attachments/assets/482ef949-e2c2-478a-8fd1-d919ba44e483)
+![Diagrama de planeación_page-0002](https://github.com/user-attachments/assets/21c402ee-9ff0-414f-8f9d-a484ff76cb05)
+
+
+
 ## PARTE A
+
+<img width="524" height="626" alt="image" src="https://github.com/user-attachments/assets/787b7990-2d5f-4bb1-a866-81af825e476a" />
+
 En esta primera parte se realizó una investigación de los siguientes temas: actividad simpática y parasimpática, su efecto, la variabilidad y el diagrama de Poincaré como herramienta.
 
 ### Actividad simpática y parasimpática del sistema nervioso autónomo 
@@ -244,6 +254,9 @@ Obteniendo la siguiente grafica:
 
 ## PARTE B 
 
+<img width="407" height="631" alt="image" src="https://github.com/user-attachments/assets/3910eee2-c042-4590-9255-3d26b52b44ce" />
+
+
 En esta segunda parte se aplica un pre-procesaiento de esta señal, diseñando un filtro IIR de acuerdo con los parametros dde la señal, para luego obtener la ecuación teniendo en cuenta que la señal se divide en dos segamentos y por ultimo asumiendo parámetros inciales en 0,  estos calculos se evidencian en la siguiente imagen:
 
 <img width="899" height="1028" alt="image" src="https://github.com/user-attachments/assets/22c4adf8-7377-4ecb-8ad6-4a3ef281edb4" />
@@ -262,7 +275,7 @@ from scipy.signal import butter, filtfilt
 
 # === CONFIGURACIÓN ===
 ruta = "/content/senal_ECG_20251112_150635.txt"     # <-- cambia esta ruta
-duracion_total = 240      # segundos grabados (ejemplo)
+duracion_total = 240      # segundos grabados (4 minutos)
 segmento = 240            # duración de cada gráfico en segundos
 fs = 2000                 # frecuencia de muestreo real
 
@@ -439,6 +452,9 @@ Teniendo como resultado los siguientes datos:
 
 ## PARTE C 
 
+<img width="438" height="613" alt="image" src="https://github.com/user-attachments/assets/5c9b76c1-9c57-4ed2-bd59-cb7f0b90ee16" />
+
+
 Para esta ultima parte se obtiene el diagrama de Poincare para cada segmento de la señal ECG. Este diagrama se obtiene implementando el siguiente código:
 
 ```python
@@ -482,7 +498,13 @@ Teniendo como resultado los siguientes diagramas:
 
 <img width="1403" height="590" alt="image" src="https://github.com/user-attachments/assets/225ee334-e71e-4b03-99e4-9822a4b7890b" />
 
-En estos diagramas observamos que en el segmento 1 (Azul) en el cual la persona se encontraba en reposo no hay mucha dispersion de los puntos, estos se acumulan principalmente entre 0,55 y 0,8 formando una elipse, lo que indica que hay mayor actividad del sistema parasimpático, indicando una distribucion normal de un paciente sano. Por otro lado el segmento 2 (Rojo) tomado mientras la persona leía se evidencia mayor dispersion indicando mayor actividad simpatica.
+En estos diagramas observamos que en el segmento 1 (Azul) en el cual la persona se encontraba en reposo no hay mucha dispersion de los puntos, estos se acumulan principalmente entre 0,55 y 0,8 segundos formando una elipse, lo que indica que hay mayor actividad del sistema parasimpático y una menor variabilidad evidenciando una actividad normal en un corazón cuando está en reposo . Por otro lado el segmento 2 (Rojo) tomado mientras la persona leía se evidencia mayor dispersion indicando mayor variabilidad, es decir, aumenta la actividad simpática esto debido a la actividad realizada.
+
+Finalmente se realiza el cálculo de actividad vagal (CVI) y de actividad simpática (CSI) implementando el siguiente código:
+
+```python
+
+```
 
 
 ## BIBLIOGRAFIA 
