@@ -503,9 +503,54 @@ En estos diagramas observamos que en el segmento 1 (Azul) en el cual la persona 
 Finalmente se realiza el cálculo de actividad vagal (CVI) y de actividad simpática (CSI) implementando el siguiente código:
 
 ```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+RR1 = np.loadtxt("/content/RR_segmento1.txt")
+
+# Convertir a milisegundos 
+RR1 = RR1 * 1000  
+# Diferencias entre intervalos consecutivos
+d = np.diff(RR1)
+# Calcular SD1 y SD2 usando varianza muestral (ddof=1)
+SD1_1 = np.sqrt(np.var(d, ddof=1) / 2)
+SD2_1 = np.sqrt(2 * np.var(RR1, ddof=1) - SD1_1**2)
+
+CSI = SD2_1 / SD1_1
+CVI = np.log10(SD1_1 * SD2_1)
+
+print("Segmento 1:")
+print("CSI =", CSI)
+print("CVI =", CVI)
+
+
+RR2 = np.loadtxt("/content/RR_segmento2.txt")
+
+# Convertir a milisegundos 
+RR2 = RR2 * 1000  
+# Diferencias entre intervalos consecutivos
+d = np.diff(RR2)
+# Calcular SD1 y SD2 usando varianza muestral (ddof=1)
+SD1_2 = np.sqrt(np.var(d, ddof=1) / 2)
+SD2_2 = np.sqrt(2 * np.var(RR2, ddof=1) - SD1_2**2)
+
+CSI_2 = SD2_2 / SD1_2
+CVI_2 = np.log10(SD1_2 * SD2_2)
+
+print("Segmento 2:")
+print("CSI =", CSI_2)
+print("CVI =", CVI_2)
 
 ```
 
+Obteniendo los siguientes resultados:
+
+Segmento 1:
+CSI = 2.712055651027267
+CVI = 3.272602454895964
+Segmento 2:
+CSI = 1.2857945457318
+CVI = 4.307038704112275
 
 ## BIBLIOGRAFIA 
 1. "VARIABILIDAD DE LA FRECUENCIA CARDÍACA COMO INDICADOR DE LA ACTIVIDAD DEL SISTEMA NERVIOSO AUTÓNOMO: IMPLICACIONES EN EL EJERCICIO Y PATOLOGÍAS." (También referida en su versión en inglés como Detection Heart Rate Variability as an Indicator of Autonomic Nervous System Activation: Implications in Exercise and Pathologies). Este artículo fue publicado en la Revista Médica de la Universidad de Costa Rica, Volumen 11, Número 1, Artículo 5.
